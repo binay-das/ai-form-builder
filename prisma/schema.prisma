@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id       String  @id @default(cuid())
+  name     String?
+  email    String
+  password String
+
+  forms    Form[]
+  response Response[]
+}
+
+model Form {
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+
+  schema Json
+
+  isPublished Boolean @default(false)
+  isArchived  Boolean @default(false)
+
+  submissionCount Int @default(0)
+
+  responses Response[]
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Response {
+  id     String @id @default(cuid())
+  formId String
+  form   Form   @relation(fields: [formId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  answers Json
+
+  submittedAt DateTime @default(now())
+}
