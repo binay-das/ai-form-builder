@@ -26,3 +26,36 @@ export async function GET(
     return new NextResponse("Internal Error", { status: 500 });
   }
 }
+
+
+export async function PUT(
+  req: Request,
+  { params }: { params: { formId: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const body = await req.json();
+    const { title, description, schema, isPublished, isArchived } = body;
+
+    const form = await prisma.form.update({
+      where: {
+        id: params.formId,
+        userId: session.user.id
+      },
+      data: {
+        title, description,
+        schema, isPublished,
+        isArchived
+      }
+    });
+
+    return NextResponse.json(form);
+  } catch (error) {
+    console.error("[FORM_PATCH]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
