@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    const { title, description } = body;
+    const { title, description, schema } = body;
 
     if (!title || typeof title !== "string") {
       return new NextResponse("Title is required", { status: 400 });
@@ -50,7 +50,7 @@ export async function POST(req: Request) {
         userId: session.user.id,
         title,
         description: description || "",
-        schema: [],
+        schema: Array.isArray(schema) ? schema : [],
       },
     });
 
