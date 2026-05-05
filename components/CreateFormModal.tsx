@@ -24,7 +24,6 @@ import {
   ToggleLeft,
   Link,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -74,13 +73,13 @@ function uid() {
   return Math.random().toString(36).slice(2, 9);
 }
 
-// ─── Props ────────────────────────────────────────────────────────────────────
 interface CreateFormModalProps {
   isOpen: boolean;
   onClose: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onFormCreated?: (form: any) => void;
 }
 
-// ─── FieldTypeButton ──────────────────────────────────────────────────────────
 function FieldTypeButton({
   type, label, icon, onClick,
 }: { type: FieldType; label: string; icon: React.ReactNode; onClick: () => void }) {
@@ -96,7 +95,6 @@ function FieldTypeButton({
   );
 }
 
-// ─── FieldEditor ──────────────────────────────────────────────────────────────
 function FieldEditor({
   field,
   index,
@@ -272,13 +270,12 @@ function FieldEditor({
   );
 }
 
-export const CreateFormModal = ({ isOpen, onClose }: CreateFormModalProps) => {
+export const CreateFormModal = ({ isOpen, onClose, onFormCreated }: CreateFormModalProps) => {
   const [step, setStep] = useState<1 | 2>(1);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [fields, setFields] = useState<FormField[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   if (!isOpen) return null;
 
@@ -334,7 +331,8 @@ export const CreateFormModal = ({ isOpen, onClose }: CreateFormModalProps) => {
       });
 
       if (response.ok) {
-        router.refresh();
+        const newForm = await response.json();
+        onFormCreated?.(newForm);
         resetAndClose();
       }
     } catch (error) {
