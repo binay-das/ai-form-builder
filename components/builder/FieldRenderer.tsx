@@ -1,7 +1,7 @@
 "use client";
 
 import { FormField } from "@/types/form";
-import { Trash2, GripVertical } from "lucide-react";
+import { Trash2, GripVertical, Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FieldRendererProps {
@@ -31,12 +31,10 @@ export function FieldRenderer({
           : "border-slate-200 hover:border-slate-300 hover:shadow-sm"
       )}
     >
-      {/* Drag handle (visual only for now) */}
       <div className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-30 transition-opacity">
         <GripVertical className="h-4 w-4 text-slate-400" />
       </div>
 
-      {/* Delete button */}
       <button
         onClick={(e) => {
           e.stopPropagation();
@@ -49,27 +47,30 @@ export function FieldRenderer({
       </button>
 
       <div className="space-y-2 pl-3">
-        {/* Label */}
         <div className="flex items-center gap-2">
           <label className="text-sm font-semibold text-slate-700">
-            {field.label}
+            {field.label || <span className="italic text-slate-300">Untitled field</span>}
             {field.required && (
               <span className="ml-1 text-red-400">*</span>
             )}
           </label>
-          {isSelected && (
-            <span className="text-[10px] bg-indigo-100 text-indigo-600 font-semibold px-1.5 py-0.5 rounded-md uppercase tracking-wide">
-              {field.type}
-            </span>
-          )}
+          {isSelected ? (
+            <>
+              <span className="text-[10px] bg-indigo-100 text-indigo-600 font-semibold px-1.5 py-0.5 rounded-md uppercase tracking-wide">
+                {field.type}
+              </span>
+              <span className="flex items-center gap-0.5 text-[10px] text-indigo-400 font-medium">
+                <Pencil className="h-2.5 w-2.5" />
+                Edit in panel →
+              </span>
+            </>
+          ) : null}
         </div>
 
-        {/* Help text */}
         {field.helpText && (
           <p className="text-xs text-slate-400">{field.helpText}</p>
         )}
 
-        {/* Field preview */}
         <FieldPreview field={field} />
       </div>
     </div>
