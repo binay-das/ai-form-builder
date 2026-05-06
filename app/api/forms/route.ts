@@ -2,6 +2,8 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import { validateSchema, normalizeSchema } from "@/lib/schema-validation";
+import { FormField } from "@/types/form";
 
 
 export async function GET() {
@@ -45,12 +47,20 @@ export async function POST(req: Request) {
       return new NextResponse("Title is required", { status: 400 });
     }
 
+    let validatedSchema: FormField[] = [];
+    if (schema !== undefined && schema !== null) {
+      if (!validateSchema(schema)) {
+        return new NextResponse("Invalid schema format", { status: 400 });
+      }
+      validatedSchema = normalizeSchema(schema).fields;
+    }
+
     const form = await prisma.form.create({
       data: {
         userId: session.user.id,
         title,
         description: description || "",
-        schema: Array.isArray(schema) ? schema : [],
+        schema: validatedSchema as any,
       },
     });
 

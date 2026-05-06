@@ -2,6 +2,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import { validateSchema, normalizeSchema } from "@/lib/schema-validation";
 
 async function getAuthenticatedForm(formId: string, userId: string) {
   return await prisma.form.findFirst({
@@ -41,6 +42,14 @@ export async function PUT(
     const body = await req.json();
     const { title, description, schema, isPublished, isArchived } = body;
 
+    let validatedSchema = undefined;
+    if (schema !== undefined && schema !== null) {
+      if (!validateSchema(schema)) {
+        return new NextResponse("Invalid schema format", { status: 400 });
+      }
+      validatedSchema = normalizeSchema(schema).fields;
+    }
+
     const form = await prisma.form.update({
       where: {
         id: params.formId,
@@ -48,7 +57,7 @@ export async function PUT(
       },
       data: {
         title, description,
-        schema, isPublished,
+        schema: validatedSchema as any, isPublished,
         isArchived
       }
     });
