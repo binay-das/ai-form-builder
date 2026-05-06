@@ -1,7 +1,7 @@
 "use client";
 
 import { FormField, FieldOption } from "@/types/form";
-import { Settings2, Trash2, Plus, X } from "lucide-react";
+import { Settings2, Trash2, Plus, X, Copy } from "lucide-react";
 import { nanoid } from "nanoid";
 import { cn } from "@/lib/utils";
 
@@ -9,12 +9,14 @@ interface PropertiesPanelProps {
   selectedField: FormField | null;
   onUpdateField: (id: string, updates: Partial<FormField>) => void;
   onDeleteField: (id: string) => void;
+  onDuplicateField: (id: string) => void;
 }
 
 export function PropertiesPanel({
   selectedField,
   onUpdateField,
   onDeleteField,
+  onDuplicateField,
 }: PropertiesPanelProps) {
   if (!selectedField) {
     return (
@@ -44,13 +46,22 @@ export function PropertiesPanel({
             {selectedField.type} Field
           </p>
         </div>
-        <button
-          onClick={() => onDeleteField(selectedField.id)}
-          className="p-1.5 rounded-lg hover:bg-red-50 hover:text-red-500 text-slate-400 transition-colors"
-          title="Delete field"
-        >
-          <Trash2 className="h-4 w-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => onDuplicateField(selectedField.id)}
+            className="p-1.5 rounded-lg hover:bg-indigo-50 hover:text-indigo-600 text-slate-400 transition-colors"
+            title="Duplicate field"
+          >
+            <Copy className="h-4 w-4" />
+          </button>
+          <button
+            onClick={() => onDeleteField(selectedField.id)}
+            className="p-1.5 rounded-lg hover:bg-red-50 hover:text-red-500 text-slate-400 transition-colors"
+            title="Delete field"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       {/* Scrollable form */}

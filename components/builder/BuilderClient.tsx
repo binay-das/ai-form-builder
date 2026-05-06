@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, ArrowLeft, Save, Eye } from "lucide-react";
+import { Loader2, ArrowLeft, Save, Eye, CheckCircle2 } from "lucide-react";
 import { BuilderSidebar } from "./BuilderSidebar";
 import { BuilderCanvas } from "./BuilderCanvas";
 import { PropertiesPanel } from "./PropertiesPanel";
@@ -23,6 +23,7 @@ export function BuilderClient({
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [savedAt, setSavedAt] = useState<Date | null>(null);
 
   const {
     fields,
@@ -32,8 +33,24 @@ export function BuilderClient({
     selectField,
     updateField,
     deleteField,
+    duplicateField,
+    moveField,
     reorderFields,
   } = useBuilderState(initialFields);
+
+  // Keyboard shortcut: Delete/Backspace removes the selected field
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement).tagName;
+      // Don't fire when user is typing in an input/textarea
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if ((e.key === "Delete" || e.key === "Backspace") && selectedFieldId) {
+        deleteField(selectedFieldId);
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [selectedFieldId, deleteField]);
 
   const handleSave = useCallback(async () => {
     try {
@@ -45,6 +62,7 @@ export function BuilderClient({
         body: JSON.stringify({ schema: fields }),
       });
       if (!res.ok) throw new Error("Failed to save");
+      setSavedAt(new Date());
     } catch {
       setSaveError("Could not save. Please try again.");
     } finally {
@@ -68,11 +86,21 @@ export function BuilderClient({
           <span className="text-sm font-semibold text-slate-800 truncate max-w-[200px]">
             {formTitle}
           </span>
+          {/* Field counter pill */}
+          <span className="text-[11px] font-semibold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">
+            {fields.length} {fields.length === 1 ? "field" : "fields"}
+          </span>
         </div>
 
         <div className="flex items-center gap-2">
           {saveError && (
             <span className="text-xs text-red-500">{saveError}</span>
+          )}
+          {savedAt && !saveError && !isSaving && (
+            <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              Saved {savedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+            </span>
           )}
           <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors">
             <Eye className="h-4 w-4" />
@@ -104,6 +132,7 @@ export function BuilderClient({
           selectedFieldId={selectedFieldId}
           onSelectField={selectField}
           onDeleteField={deleteField}
+          onMoveField={moveField}
           onReorderFields={reorderFields}
         />
 
@@ -112,6 +141,7 @@ export function BuilderClient({
           selectedField={selectedField}
           onUpdateField={updateField}
           onDeleteField={deleteField}
+          onDuplicateField={duplicateField}
         />
       </div>
     </div>

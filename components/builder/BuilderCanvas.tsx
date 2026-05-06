@@ -3,13 +3,13 @@
 import { FormField } from "@/types/form";
 import { FieldRenderer } from "./FieldRenderer";
 import { Sparkles, MousePointerClick } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 interface BuilderCanvasProps {
   fields: FormField[];
   selectedFieldId: string | null;
   onSelectField: (id: string | null) => void;
   onDeleteField: (id: string) => void;
+  onMoveField: (id: string, direction: "up" | "down") => void;
   onReorderFields: (fields: FormField[]) => void;
 }
 
@@ -18,6 +18,7 @@ export function BuilderCanvas({
   selectedFieldId,
   onSelectField,
   onDeleteField,
+  onMoveField,
 }: BuilderCanvasProps) {
   return (
     <main
@@ -34,9 +35,12 @@ export function BuilderCanvas({
                 key={field.id}
                 field={field}
                 index={index}
+                total={fields.length}
                 isSelected={selectedFieldId === field.id}
                 onSelect={() => onSelectField(field.id)}
                 onDelete={() => onDeleteField(field.id)}
+                onMoveUp={() => onMoveField(field.id, "up")}
+                onMoveDown={() => onMoveField(field.id, "down")}
               />
             ))}
 

@@ -1,22 +1,33 @@
 "use client";
 
 import { FormField } from "@/types/form";
-import { Trash2, GripVertical, Pencil } from "lucide-react";
+import { Trash2, GripVertical, Pencil, ChevronUp, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+// FieldRenderer intentionally receives `field` by value so it re-renders
+// whenever the parent (BuilderClient) state changes — this is how label edits
+// from the PropertiesPanel immediately reflect in the canvas card.
 
 interface FieldRendererProps {
   field: FormField;
   index: number;
+  total: number;
   isSelected: boolean;
   onSelect: () => void;
   onDelete: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
 }
 
 export function FieldRenderer({
   field,
+  index,
+  total,
   isSelected,
   onSelect,
   onDelete,
+  onMoveUp,
+  onMoveDown,
 }: FieldRendererProps) {
   return (
     <div
@@ -31,23 +42,46 @@ export function FieldRenderer({
           : "border-slate-200 hover:border-slate-300 hover:shadow-sm"
       )}
     >
-      <div className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-30 transition-opacity">
+      {/* Drag handle (visual only) */}
+      <div className="absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-20 transition-opacity">
         <GripVertical className="h-4 w-4 text-slate-400" />
       </div>
 
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          onDelete();
-        }}
-        className="absolute right-3 top-3 opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-lg hover:bg-red-50 hover:text-red-500 text-slate-400"
-        title="Delete field"
-      >
-        <Trash2 className="h-3.5 w-3.5" />
-      </button>
+      {/* Top-right action buttons */}
+      <div className="absolute right-3 top-3 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+        {/* Move up */}
+        <button
+          onClick={(e) => { e.stopPropagation(); onMoveUp(); }}
+          disabled={index === 0}
+          className="p-1 rounded-md hover:bg-slate-100 text-slate-400 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+          title="Move up"
+        >
+          <ChevronUp className="h-3.5 w-3.5" />
+        </button>
+
+        {/* Move down */}
+        <button
+          onClick={(e) => { e.stopPropagation(); onMoveDown(); }}
+          disabled={index === total - 1}
+          className="p-1 rounded-md hover:bg-slate-100 text-slate-400 disabled:opacity-20 disabled:cursor-not-allowed transition-colors"
+          title="Move down"
+        >
+          <ChevronDown className="h-3.5 w-3.5" />
+        </button>
+
+        {/* Delete */}
+        <button
+          onClick={(e) => { e.stopPropagation(); onDelete(); }}
+          className="p-1 rounded-md hover:bg-red-50 hover:text-red-500 text-slate-400 transition-colors"
+          title="Delete field (Del)"
+        >
+          <Trash2 className="h-3.5 w-3.5" />
+        </button>
+      </div>
 
       <div className="space-y-2 pl-3">
-        <div className="flex items-center gap-2">
+        {/* Label — updates live as user types in the Properties Panel */}
+        <div className="flex items-center gap-2 flex-wrap">
           <label className="text-sm font-semibold text-slate-700">
             {field.label || <span className="italic text-slate-300">Untitled field</span>}
             {field.required && (

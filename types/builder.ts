@@ -19,5 +19,7 @@ export type BuilderAction =
   | { type: "SELECT_FIELD"; payload: string | null }
   | { type: "UPDATE_FIELD"; payload: { id: string; updates: Partial<FormField> } }
   | { type: "DELETE_FIELD"; payload: string }
+  | { type: "DUPLICATE_FIELD"; payload: { id: string; newId: string } }
+  | { type: "MOVE_FIELD"; payload: { id: string; direction: "up" | "down" } }
   | { type: "REORDER_FIELDS"; payload: FormField[] }
   | { type: "SET_FIELDS"; payload: FormField[] };
