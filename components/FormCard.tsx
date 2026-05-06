@@ -3,6 +3,7 @@
 import { Users, Calendar, Trash2, Edit2, ExternalLink } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { FormResponse } from "@/types/form";
+import Link from "next/link";
 
 interface FormCardProps {
   id: string;
@@ -52,9 +53,13 @@ export const FormCard = ({
         </div>
 
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button className="p-2 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all">
+          <Link
+            href={`/dashboard/forms/${id}/builder`}
+            className="p-2 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all"
+            title="Open in builder"
+          >
             <Edit2 className="h-4 w-4" />
-          </button>
+          </Link>
           <button
             onClick={() => onDelete(id)}
             className="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
@@ -80,9 +85,13 @@ export const FormCard = ({
           {isPublished ? "Published" : "Draft"}
         </span>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all">
+          <Link
+            href={`/dashboard/forms/${id}/builder`}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all"
+            title="Open in builder"
+          >
             <Edit2 className="h-4 w-4" />
-          </button>
+          </Link>
           <button
             onClick={() => onDelete(id)}
             className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
