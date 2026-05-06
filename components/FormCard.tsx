@@ -2,6 +2,7 @@
 
 import { Users, Calendar, Trash2, Edit2, ExternalLink } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { FormResponse } from "@/types/form";
 
 interface FormCardProps {
   id: string;

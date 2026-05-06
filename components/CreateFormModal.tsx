@@ -24,36 +24,7 @@ import {
   ToggleLeft,
   Link,
 } from "lucide-react";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type FieldType =
-  | "text"
-  | "textarea"
-  | "email"
-  | "number"
-  | "phone"
-  | "date"
-  | "checkbox"
-  | "radio"
-  | "select"
-  | "toggle"
-  | "url";
-
-interface FieldOption {
-  id: string;
-  label: string;
-}
-
-interface FormField {
-  id: string;
-  type: FieldType;
-  label: string;
-  placeholder?: string;
-  required: boolean;
-  options?: FieldOption[];
-  helpText?: string;
-}
+import { FormField, FieldType } from "@/types/form";
 
 const FIELD_TYPES: { type: FieldType; label: string; icon: React.ReactNode }[] = [
   { type: "text",     label: "Short Text",   icon: <Type className="h-4 w-4" /> },
@@ -76,8 +47,7 @@ function uid() {
 interface CreateFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  onFormCreated?: (form: any) => void;
+  onFormCreated?: (form: import("@/types/form").FormResponse) => void;
 }
 
 function FieldTypeButton({

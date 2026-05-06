@@ -4,20 +4,12 @@ import { useCallback, useEffect, useState } from "react";
 import { Plus, LayoutGrid, List, Sparkles, Loader2 } from "lucide-react";
 import { FormCard } from "./FormCard";
 import { CreateFormModal } from "./CreateFormModal";
-
-interface Form {
-  id: string;
-  title: string;
-  description: string | null;
-  submissionCount: number;
-  updatedAt: string;
-  isPublished: boolean;
-}
+import { FormResponse } from "@/types/form";
 
 type Tab = "all" | "published" | "draft";
 
 export const Dashboard = () => {
-  const [forms, setForms] = useState<Form[]>([]);
+  const [forms, setForms] = useState<FormResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("all");
@@ -52,7 +44,7 @@ export const Dashboard = () => {
     }
   };
 
-  const onFormCreated = (newForm: Form) => {
+  const onFormCreated = (newForm: FormResponse) => {
     setForms((prev) => [newForm, ...prev]);
   };
 

@@ -37,16 +37,14 @@ export interface FormData {
   schema: FormSchema | FormField[]
 }
 
-export const FIELD_TYPES: { type: FieldType; label: string; icon: string }[] = [
-  { type: "text", label: "Short Text", icon: "Type" },
-  { type: "textarea", label: "Long Text", icon: "AlignLeft" },
-  { type: "email", label: "Email", icon: "Mail" },
-  { type: "number", label: "Number", icon: "Hash" },
-  { type: "phone", label: "Phone", icon: "Phone" },
-  { type: "date", label: "Date", icon: "Calendar" },
-  { type: "select", label: "Dropdown", icon: "List" },
-  { type: "radio", label: "Multiple Choice", icon: "Circle" },
-  { type: "checkbox", label: "Checkboxes", icon: "CheckSquare" },
-  { type: "toggle", label: "Toggle", icon: "ToggleLeft" },
-  { type: "url", label: "URL", icon: "Link" },
-]
+export interface FormResponse {
+  id: string
+  title: string
+  description: string | null
+  schema: FormField[] | FormSchema
+  isPublished: boolean
+  submissionCount: number
+  updatedAt: string
+  createdAt: string
+  userId: string
+}
