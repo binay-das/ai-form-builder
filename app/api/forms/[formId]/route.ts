@@ -2,7 +2,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { validateSchema, normalizeSchema } from "@/lib/schema-validation";
+import { validateSchema, normalizeSchema, CURRENT_SCHEMA_VERSION } from "@/lib/schema-validation";
 
 async function getAuthenticatedForm(formId: string, userId: string) {
   return await prisma.form.findFirst({
@@ -40,14 +40,53 @@ export async function PUT(
     }
 
     const body = await req.json();
-    const { title, description, schema, isPublished, isArchived } = body;
+    const { title, description, schema, isPublished, isArchived, createVersion } = body;
 
-    let validatedSchema = undefined;
     if (schema !== undefined && schema !== null) {
       if (!validateSchema(schema)) {
         return new NextResponse("Invalid schema format", { status: 400 });
       }
-      validatedSchema = normalizeSchema(schema).fields;
+
+      const validatedSchema = normalizeSchema(schema);
+
+      if (createVersion) {
+        const parentForm = await prisma.form.findFirst({
+          where: { id: params.formId, userId: session.user.id }
+        });
+
+        if (!parentForm) {
+          return new NextResponse("Form not found", { status: 404 });
+        }
+
+        const newVersion = await prisma.form.create({
+          data: {
+            userId: session.user.id,
+            title: title || parentForm.title,
+            description: description || parentForm.description,
+            schema: validatedSchema.fields as any,
+            schemaVersion: CURRENT_SCHEMA_VERSION,
+            parentFormId: params.formId,
+          },
+        });
+
+        return NextResponse.json(newVersion);
+      }
+
+      const form = await prisma.form.update({
+        where: {
+          id: params.formId,
+          userId: session.user.id
+        },
+        data: {
+          title, description,
+          schema: validatedSchema.fields as any,
+          schemaVersion: CURRENT_SCHEMA_VERSION,
+          isPublished,
+          isArchived
+        }
+      });
+
+      return NextResponse.json(form);
     }
 
     const form = await prisma.form.update({
@@ -57,7 +96,7 @@ export async function PUT(
       },
       data: {
         title, description,
-        schema: validatedSchema as any, isPublished,
+        isPublished,
         isArchived
       }
     });

@@ -5,6 +5,8 @@ const VALID_FIELD_TYPES: FieldType[] = [
   "checkbox", "radio", "select", "toggle", "url"
 ]
 
+export const CURRENT_SCHEMA_VERSION = "1.0"
+
 export function validateField(field: unknown): field is FormField {
   if (typeof field !== "object" || field === null) return false
 
@@ -49,7 +51,7 @@ export function validateSchema(schema: unknown): schema is FormSchema | FormFiel
 
 export function normalizeSchema(schema: unknown): FormSchema {
   if (Array.isArray(schema)) {
-    return { version: "1.0", fields: schema.filter(validateField) }
+    return { version: CURRENT_SCHEMA_VERSION, fields: schema.filter(validateField) }
   }
 
   if (typeof schema === "object" && schema !== null) {
@@ -62,5 +64,15 @@ export function normalizeSchema(schema: unknown): FormSchema {
     }
   }
 
-  return { version: "1.0", fields: [] }
+  return { version: CURRENT_SCHEMA_VERSION, fields: [] }
+}
+
+export function migrateSchema(schema: FormSchema): FormSchema {
+  const version = schema.version || "1.0"
+
+  if (version === "1.0") {
+    return schema
+  }
+
+  return { version: CURRENT_SCHEMA_VERSION, fields: schema.fields }
 }

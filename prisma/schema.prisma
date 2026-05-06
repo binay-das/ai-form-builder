@@ -22,7 +22,12 @@ model Form {
   title       String
   description String?
 
-  schema Json
+  schema      Json
+
+  schemaVersion String  @default("1.0")
+  parentFormId String?
+  parentForm   Form?    @relation("FormVersion", fields: [parentFormId], references: [id])
+  versions     Form[]   @relation("FormVersion")
 
   isPublished Boolean @default(false)
   isArchived  Boolean @default(false)

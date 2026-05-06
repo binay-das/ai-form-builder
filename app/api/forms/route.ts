@@ -2,7 +2,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { validateSchema, normalizeSchema } from "@/lib/schema-validation";
+import { validateSchema, normalizeSchema, CURRENT_SCHEMA_VERSION } from "@/lib/schema-validation";
 import { FormField } from "@/types/form";
 
 
@@ -61,6 +61,7 @@ export async function POST(req: Request) {
         title,
         description: description || "",
         schema: validatedSchema as any,
+        schemaVersion: CURRENT_SCHEMA_VERSION,
       },
     });
 
