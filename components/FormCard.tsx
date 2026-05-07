@@ -120,9 +120,12 @@ export const FormCard = ({
             {formatDistanceToNow(new Date(updatedAt), { addSuffix: true })}
           </span>
         </div>
-        <button className="flex items-center gap-1 text-indigo-500 hover:text-indigo-700 font-semibold transition-colors">
+        <Link
+          href={`/forms/${id}`}
+          className="flex items-center gap-1 text-indigo-500 hover:text-indigo-700 font-semibold transition-colors"
+        >
           View <ExternalLink className="h-3 w-3" />
-        </button>
+        </Link>
       </div>
     </div>
   );
