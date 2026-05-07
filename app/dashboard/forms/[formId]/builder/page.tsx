@@ -7,15 +7,16 @@ import { normalizeSchema } from "@/lib/schema-validation";
 import { FormField } from "@/types/form";
 
 interface BuilderPageProps {
-  params: { formId: string };
+  params: Promise<{ formId: string }>;
 }
 
 export default async function BuilderPage({ params }: BuilderPageProps) {
+  const { formId } = await params;
   const session = await getServerSession(authOptions);
   if (!session) redirect("/api/auth/signin");
 
   const form = await prisma.form.findFirst({
-    where: { id: params.formId, userId: session.user.id },
+    where: { id: formId, userId: session.user.id },
   });
 
   if (!form) redirect("/dashboard");
