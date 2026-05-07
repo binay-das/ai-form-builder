@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   X,
   Sparkles,
@@ -241,6 +242,7 @@ function FieldEditor({
 }
 
 export const CreateFormModal = ({ isOpen, onClose, onFormCreated }: CreateFormModalProps) => {
+  const router = useRouter();
   const [step, setStep] = useState<1 | 2>(1);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -303,7 +305,9 @@ export const CreateFormModal = ({ isOpen, onClose, onFormCreated }: CreateFormMo
       if (response.ok) {
         const newForm = await response.json();
         onFormCreated?.(newForm);
-        resetAndClose();
+        onClose();
+        // Redirect into the builder so the user can immediately design their form
+        router.push(`/dashboard/forms/${newForm.id}/builder`);
       }
     } catch (error) {
       console.error(error);
@@ -464,7 +468,7 @@ export const CreateFormModal = ({ isOpen, onClose, onFormCreated }: CreateFormMo
                 </span>
                 <button
                   type="button"
-                  disabled={isLoading || fields.length === 0}
+                  disabled={isLoading}
                   onClick={onSubmit}
                   className="py-2.5 px-8 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-200 transition-all disabled:opacity-40 disabled:shadow-none flex items-center justify-center gap-2 min-w-[160px]"
                 >
