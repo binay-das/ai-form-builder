@@ -9,11 +9,17 @@ export const TopBar = () => {
   return (
     <div className="h-14 border-b border-gray-200 bg-white flex items-center justify-between px-6">
       <span className="text-lg font-semibold text-gray-800">AI Form Builder</span>
-      <div className="flex items-center gap-4">
-        <span className="text-sm text-gray-600">{session?.user?.name || session?.user?.email?.toString().slice(0, 2).toUpperCase() || "User"}</span>
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-full border border-slate-100">
+          <User className="h-3.5 w-3.5 text-slate-500" />
+          <span className="text-xs font-medium text-slate-700">
+            {session?.user?.name || session?.user?.email?.toString().split('@')[0] || "User"}
+          </span>
+        </div>
         <button
           onClick={() => signOut()}
-          className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+          className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all"
+          title="Sign out"
         >
           <LogOut className="h-4 w-4" />
         </button>
