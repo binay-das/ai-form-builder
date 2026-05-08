@@ -63,6 +63,7 @@ export const FormCard = ({
           <button
             onClick={() => onDelete(id)}
             className="p-2 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
+            title="Delete form"
           >
             <Trash2 className="h-4 w-4" />
           </button>
@@ -95,6 +96,7 @@ export const FormCard = ({
           <button
             onClick={() => onDelete(id)}
             className="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all"
+            title="Delete form"
           >
             <Trash2 className="h-4 w-4" />
           </button>
