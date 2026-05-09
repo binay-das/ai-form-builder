@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Plus, LayoutGrid, List, Sparkles, Loader2 } from "lucide-react";
+import { Plus, LayoutGrid, List, Sparkles, Loader2, Search } from "lucide-react";
 import { FormCard } from "./FormCard";
 import { CreateFormModal } from "./CreateFormModal";
 import { FormResponse } from "@/types/form";
@@ -15,6 +15,7 @@ export const Dashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchForms = useCallback(async () => {
     try {
@@ -50,9 +51,16 @@ export const Dashboard = () => {
   };
 
   const filteredForms = forms.filter((f) => {
-    if (activeTab === "published") return f.isPublished;
-    if (activeTab === "draft") return !f.isPublished;
-    return true;
+    const matchesTab = 
+      activeTab === "all" || 
+      (activeTab === "published" && f.isPublished) || 
+      (activeTab === "draft" && !f.isPublished);
+    
+    const matchesSearch = 
+      f.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      (f.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
+
+    return matchesTab && matchesSearch;
   });
 
   const tabs: { key: Tab; label: string }[] = [
@@ -125,6 +133,17 @@ export const Dashboard = () => {
             </button>
           </div>
         </div>
+        
+        <div className="relative group">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+          <input
+            type="text"
+            placeholder="Search forms..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+          />
+        </div>
 
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-32 space-y-3">
@@ -137,14 +156,16 @@ export const Dashboard = () => {
               <Sparkles className="h-7 w-7 text-indigo-500" />
             </div>
             <h2 className="text-lg font-bold text-slate-800">
-              {activeTab === "all" ? "No forms yet" : `No ${activeTab} forms`}
+              {searchQuery ? "No matching forms" : (activeTab === "all" ? "No forms yet" : `No ${activeTab} forms`)}
             </h2>
             <p className="text-slate-500 text-sm mt-1 max-w-xs">
-              {activeTab === "all"
-                ? "Create your first form to start collecting responses."
-                : "Switch to another tab or create a new form."}
+              {searchQuery 
+                ? "Try adjusting your search terms to find what you're looking for."
+                : (activeTab === "all"
+                  ? "Create your first form to start collecting responses."
+                  : "Switch to another tab or create a new form.")}
             </p>
-            {activeTab === "all" && (
+            {activeTab === "all" && !searchQuery && (
               <button
                 onClick={() => setIsModalOpen(true)}
                 className="mt-6 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition-all text-sm"
