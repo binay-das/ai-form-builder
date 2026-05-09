@@ -5,6 +5,7 @@ import { Plus, LayoutGrid, List, Sparkles, Loader2 } from "lucide-react";
 import { FormCard } from "./FormCard";
 import { CreateFormModal } from "./CreateFormModal";
 import { FormResponse } from "@/types/form";
+import { cn } from "@/lib/utils";
 
 type Tab = "all" | "published" | "draft";
 
@@ -69,13 +70,23 @@ export const Dashboard = () => {
             <h1 className="text-2xl font-bold text-slate-900">Your Forms</h1>
             <p className="text-slate-500 mt-0.5 text-sm">Manage and share your forms.</p>
           </div>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 shadow-md shadow-indigo-200 transition-all text-sm"
-          >
-            <Plus className="h-4 w-4" />
-            New Form
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={fetchForms}
+              disabled={isLoading}
+              className="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all disabled:opacity-50"
+              title="Refresh forms"
+            >
+              <Loader2 className={cn("h-4 w-4", isLoading && "animate-spin")} />
+            </button>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 shadow-md shadow-indigo-200 transition-all text-sm"
+            >
+              <Plus className="h-4 w-4" />
+              New Form
+            </button>
+          </div>
         </div>
 
         {/* Tabs + View toggle */}
