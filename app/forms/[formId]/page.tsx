@@ -87,9 +87,32 @@ function FormFill({ fields }: { fields: FormField[] }) {
                 rows={4}
                 className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-300 resize-none"
               />
+            ) : field.type === "email" ? (
+              <input
+                type="email"
+                placeholder={field.placeholder ?? "you@example.com"}
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-300"
+              />
+            ) : field.type === "number" ? (
+              <input
+                type="number"
+                placeholder={field.placeholder ?? "0"}
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-300"
+              />
+            ) : field.type === "phone" ? (
+              <input
+                type="tel"
+                placeholder={field.placeholder ?? "+1 (555) 000-0000"}
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-300"
+              />
+            ) : field.type === "date" ? (
+              <input
+                type="date"
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-300"
+              />
             ) : (
               <input
-                type={field.type === "email" ? "email" : "text"}
+                type="text"
                 placeholder={field.placeholder ?? ""}
                 className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-300"
               />
