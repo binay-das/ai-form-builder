@@ -110,6 +110,40 @@ function FormFill({ fields }: { fields: FormField[] }) {
                 type="date"
                 className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-300"
               />
+            ) : field.type === "url" ? (
+              <input
+                type="url"
+                placeholder={field.placeholder ?? "https://"}
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-300"
+              />
+            ) : field.type === "radio" ? (
+              <div className="space-y-2">
+                {(field.options ?? []).map((opt) => (
+                  <label key={opt.id} className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 cursor-pointer hover:border-slate-300">
+                    <input type="radio" name={field.id} value={opt.id} className="w-4 h-4" />
+                    <span className="text-sm text-slate-700">{opt.label}</span>
+                  </label>
+                ))}
+              </div>
+            ) : field.type === "select" ? (
+              <select className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-300 appearance-none bg-white">
+                <option value="">Select an option</option>
+                {(field.options ?? []).map((opt) => (
+                  <option key={opt.id} value={opt.id}>{opt.label}</option>
+                ))}
+              </select>
+            ) : field.type === "checkbox" ? (
+              <label className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 cursor-pointer hover:border-slate-300">
+                <input type="checkbox" className="w-4 h-4 rounded" />
+                <span className="text-sm text-slate-700">{field.label}</span>
+              </label>
+            ) : field.type === "toggle" ? (
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-6 bg-slate-200 rounded-full relative">
+                  <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow" />
+                </div>
+                <span className="text-sm text-slate-500">{field.label}</span>
+              </div>
             ) : (
               <input
                 type="text"
