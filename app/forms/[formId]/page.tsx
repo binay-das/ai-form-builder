@@ -3,12 +3,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { normalizeSchema } from "@/lib/schema-validation";
+import { FormField } from "@/types/form";
 
 export default function PublicFormPage() {
   const params = useParams();
   const formId = params.formId as string;
 
   const [form, setForm] = useState<any>(null);
+  const [fields, setFields] = useState<FormField[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
@@ -22,7 +25,10 @@ export default function PublicFormPage() {
         return res.json();
       })
       .then((data) => {
-        if (data) setForm(data);
+        if (data) {
+          setForm(data);
+          setFields(normalizeSchema(data.schema).fields);
+        }
       })
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false));
@@ -56,9 +62,32 @@ export default function PublicFormPage() {
             <p className="mt-2 text-slate-500">{form.description}</p>
           )}
         </div>
-        <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
-          <p className="text-slate-400">Form fields will appear here.</p>
-        </div>
+        <FormFill fields={fields} />
+      </div>
+    </div>
+  );
+}
+
+function FormFill({ fields }: { fields: FormField[] }) {
+  return (
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="divide-y divide-slate-100">
+        {fields.map((field) => (
+          <div key={field.id} className="p-6 space-y-1.5">
+            <label className="block text-sm font-semibold text-slate-700">
+              {field.label}
+              {field.required && <span className="ml-1 text-red-400">*</span>}
+            </label>
+            {field.helpText && (
+              <p className="text-xs text-slate-400">{field.helpText}</p>
+            )}
+            <input
+              type="text"
+              placeholder={field.placeholder ?? ""}
+              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-300"
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
