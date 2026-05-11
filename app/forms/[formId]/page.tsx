@@ -81,11 +81,19 @@ function FormFill({ fields }: { fields: FormField[] }) {
             {field.helpText && (
               <p className="text-xs text-slate-400">{field.helpText}</p>
             )}
-            <input
-              type="text"
-              placeholder={field.placeholder ?? ""}
-              className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-300"
-            />
+            {field.type === "textarea" ? (
+              <textarea
+                placeholder={field.placeholder ?? ""}
+                rows={4}
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-300 resize-none"
+              />
+            ) : (
+              <input
+                type={field.type === "email" ? "email" : "text"}
+                placeholder={field.placeholder ?? ""}
+                className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-300 focus:border-slate-300"
+              />
+            )}
           </div>
         ))}
       </div>
