@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { normalizeSchema } from "@/lib/schema-validation";
@@ -79,9 +79,13 @@ function FormFill({ fields, formId }: FormFillProps) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
+  const submittingRef = useRef(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (submittingRef.current) return;
+    submittingRef.current = true;
 
     const newErrors: Record<string, string> = {};
     for (const field of fields) {
@@ -92,6 +96,7 @@ function FormFill({ fields, formId }: FormFillProps) {
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      submittingRef.current = false;
       return;
     }
 
@@ -111,6 +116,7 @@ function FormFill({ fields, formId }: FormFillProps) {
       // silent fail
     } finally {
       setSubmitting(false);
+      submittingRef.current = false;
     }
   };
 
