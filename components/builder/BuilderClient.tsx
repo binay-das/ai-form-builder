@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, ArrowLeft, Save, Eye, CheckCircle2 } from "lucide-react";
+import { Loader2, ArrowLeft, Save, CheckCircle2, Globe } from "lucide-react";
 import { BuilderSidebar } from "./BuilderSidebar";
 import { BuilderCanvas } from "./BuilderCanvas";
 import { PropertiesPanel } from "./PropertiesPanel";
@@ -13,17 +13,21 @@ interface BuilderClientProps {
   formId: string;
   formTitle: string;
   initialFields: FormField[];
+  initialPublished?: boolean;
 }
 
 export function BuilderClient({
   formId,
   formTitle,
   initialFields,
+  initialPublished = false,
 }: BuilderClientProps) {
   const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
+  const [isPublished, setIsPublished] = useState(initialPublished);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   const {
     fields,
@@ -70,6 +74,23 @@ export function BuilderClient({
     }
   }, [formId, fields]);
 
+  const handlePublish = useCallback(async () => {
+    try {
+      setIsPublishing(true);
+      const res = await fetch(`/api/forms/${formId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isPublished: !isPublished }),
+      });
+      if (!res.ok) throw new Error("Failed to publish");
+      setIsPublished(!isPublished);
+    } catch {
+      // silent fail
+    } finally {
+      setIsPublishing(false);
+    }
+  }, [formId, isPublished]);
+
   return (
     <div className="flex flex-col h-screen bg-[#F5F5F7] overflow-hidden">
       {/* Top bar */}
@@ -102,10 +123,6 @@ export function BuilderClient({
               Saved {savedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
             </span>
           )}
-          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors">
-            <Eye className="h-4 w-4" />
-            Preview
-          </button>
           <button
             onClick={handleSave}
             disabled={isSaving}
@@ -117,6 +134,22 @@ export function BuilderClient({
               <Save className="h-4 w-4" />
             )}
             {isSaving ? "Saving…" : "Save"}
+          </button>
+          <button
+            onClick={handlePublish}
+            disabled={isPublishing}
+            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors shadow-sm ${
+              isPublished
+                ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                : "bg-slate-900 text-white hover:bg-slate-800"
+            } disabled:opacity-60 disabled:cursor-not-allowed`}
+          >
+            {isPublishing ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Globe className="h-4 w-4" />
+            )}
+            {isPublished ? "Published" : "Publish"}
           </button>
         </div>
       </header>
