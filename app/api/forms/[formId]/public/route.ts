@@ -29,6 +29,11 @@ export async function POST(req: Request, { params }: RouteContext) {
       },
     });
 
+    await prisma.form.update({
+      where: { id: formId },
+      data: { submissionCount: { increment: 1 } },
+    });
+
     return NextResponse.json(response, { status: 201 });
   } catch (error) {
     console.error("[PUBLIC_FORM_SUBMIT]", error);
