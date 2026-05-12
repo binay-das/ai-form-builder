@@ -21,13 +21,14 @@ export default async function BuilderPage({ params }: BuilderPageProps) {
 
   if (!form) redirect("/dashboard");
 
-  const normalized = normalizeSchema(form.schema as FormField[]);
+  const normalized = normalizeSchema(form.schema as unknown as FormField[]);
 
   return (
     <BuilderClient
       formId={form.id}
       formTitle={form.title}
       initialFields={normalized.fields}
+      initialPublished={form.isPublished}
     />
   );
 }
