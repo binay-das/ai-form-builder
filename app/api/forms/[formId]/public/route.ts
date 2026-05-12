@@ -1,5 +1,9 @@
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import { normalizeSchema } from "@/lib/schema-validation";
+import { FormField } from "@/types/form";
 
 type RouteContext = { params: Promise<{ formId: string }> };
 
@@ -20,6 +24,23 @@ export async function POST(req: Request, { params }: RouteContext) {
 
     if (!answers || typeof answers !== "object") {
       return new NextResponse("Answers are required", { status: 400 });
+    }
+
+    // validate answers against form schema
+    const fields = normalizeSchema(form.schema as unknown as FormField[]).fields;
+    const invalidFieldIds: string[] = [];
+
+    for (const fieldId of Object.keys(answers as object)) {
+      if (!fields.find((f) => f.id === fieldId)) {
+        invalidFieldIds.push(fieldId);
+      }
+    }
+
+    if (invalidFieldIds.length > 0) {
+      return NextResponse.json(
+        { error: "Invalid field ids in answers", invalid: invalidFieldIds },
+        { status: 400 }
+      );
     }
 
     const response = await prisma.response.create({
