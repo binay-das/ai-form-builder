@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, ArrowLeft, Save, Eye, CheckCircle2, Globe } from "lucide-react";
+import { Loader2, ArrowLeft, Save, Eye, CheckCircle2, Globe, Link, Copy, Check } from "lucide-react";
 import { BuilderSidebar } from "./BuilderSidebar";
 import { BuilderCanvas } from "./BuilderCanvas";
 import { PropertiesPanel } from "./PropertiesPanel";
@@ -29,6 +29,8 @@ export function BuilderClient({
   const [isPublished, setIsPublished] = useState(initialPublished);
   const [isPublishing, setIsPublishing] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [showShare, setShowShare] = useState(false);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   const {
     fields,
@@ -92,6 +94,13 @@ export function BuilderClient({
     }
   }, [formId, isPublished]);
 
+  const handleCopyLink = useCallback(() => {
+    const url = `${window.location.origin}/forms/${formId}`;
+    navigator.clipboard.writeText(url);
+    setCopySuccess(true);
+    setTimeout(() => setCopySuccess(false), 2000);
+  }, [formId]);
+
   return (
     <div className="flex flex-col h-screen bg-[#F5F5F7] overflow-hidden">
       {/* Top bar */}
@@ -135,6 +144,13 @@ export function BuilderClient({
           >
             <Eye className="h-4 w-4" />
             Preview
+          </button>
+          <button
+            onClick={() => setShowShare(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+          >
+            <Link className="h-4 w-4" />
+            Share
           </button>
           <button
             onClick={handleSave}
@@ -225,6 +241,46 @@ export function BuilderClient({
                   ))}
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Share Dialog */}
+      {showShare && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+              <h2 className="text-lg font-semibold text-slate-800">Share Form</h2>
+              <button
+                onClick={() => setShowShare(false)}
+                className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors text-slate-500"
+              >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <p className="text-sm text-slate-500">
+                Share this link with respondents to let them fill out your form.
+              </p>
+              <div className="flex items-center gap-2">
+                <div className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-600 truncate">
+                  {typeof window !== "undefined" ? `${window.location.origin}/forms/${formId}` : ""}
+                </div>
+                <button
+                  onClick={handleCopyLink}
+                  className="flex items-center gap-1.5 px-4 py-2 bg-slate-900 text-white text-sm font-medium rounded-lg hover:bg-slate-800 transition-colors"
+                >
+                  {copySuccess ? (
+                    <Check className="h-4 w-4" />
+                  ) : (
+                    <Copy className="h-4 w-4" />
+                  )}
+                  {copySuccess ? "Copied!" : "Copy"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
