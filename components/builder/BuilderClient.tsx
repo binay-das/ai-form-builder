@@ -112,6 +112,11 @@ export function BuilderClient({
           <span className="text-[11px] font-semibold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">
             {fields.length} {fields.length === 1 ? "field" : "fields"}
           </span>
+          {isPublished && (
+            <span className="text-[11px] font-semibold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
+              Published
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
