@@ -13,6 +13,7 @@ export async function POST(req: Request, { params }: RouteContext) {
     });
 
     if (!form) return new NextResponse("Not Found", { status: 404 });
+    if (!form.isPublished) return new NextResponse("Form not published", { status: 404 });
 
     const body = await req.json();
     const { answers } = body;
