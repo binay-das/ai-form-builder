@@ -231,7 +231,10 @@ export function ResponsesClient({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-6">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
-              <h2 className="text-lg font-semibold text-slate-800">Response Details</h2>
+              <div>
+                <h2 className="text-lg font-semibold text-slate-800">Response Details</h2>
+                <p className="text-sm text-slate-500 mt-1">Submitted {formatDate(selectedResponse.submittedAt)}</p>
+              </div>
               <button
                 onClick={() => setSelectedResponse(null)}
                 className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors text-slate-500"
