@@ -143,7 +143,7 @@ export function ResponsesClient({
           </div>
           <div className="bg-white rounded-xl p-12 text-center border border-slate-200">
             <p className="text-slate-500 text-lg">No responses yet</p>
-            <p className="text-slate-400 text-sm mt-2">Responses will appear here when respondents submit the form.</p>
+            <p className="text-slate-400 text-sm mt-2">Responses will appear here once respondents submit the form.</p>
           </div>
         </div>
       </div>
