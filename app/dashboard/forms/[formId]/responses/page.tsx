@@ -45,6 +45,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Eye, X, Calendar, Download } from "lucide-react";
 import { FormField } from "@/types/form";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface Response {
   id: string;
@@ -110,16 +111,15 @@ export function ResponsesClient({
       <div className="min-h-screen bg-slate-50 p-6">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-4 mb-6">
-            <button onClick={() => router.push("/dashboard")} className="text-slate-500 hover:text-slate-900">
-              <ArrowLeft className="h-5 w-5" />
-            </button>
-            <h1 className="text-2xl font-bold text-slate-900">Responses</h1>
+            <Skeleton className="h-8 w-8" />
+            <Skeleton className="h-8 w-48" />
           </div>
-          <div className="space-y-4">
+          <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-xl p-4 animate-pulse">
-                <div className="h-4 bg-slate-200 rounded w-1/4 mb-2"></div>
-                <div className="h-3 bg-slate-100 rounded w-1/2"></div>
+              <div key={i} className="flex items-center gap-4">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-4 w-64" />
+                <Skeleton className="h-8 w-16 ml-auto" />
               </div>
             ))}
           </div>
