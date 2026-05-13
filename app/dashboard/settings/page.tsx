@@ -35,7 +35,17 @@ export default async function SettingsPage() {
 
           <div className="p-6">
             <h2 className="text-lg font-semibold text-slate-800 mb-2">Notifications</h2>
-            <p className="text-sm text-slate-500">Configure notification preferences</p>
+            <p className="text-sm text-slate-500 mb-4">Configure notification preferences</p>
+            <div className="space-y-4">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" defaultChecked className="w-4 h-4 rounded border-slate-300" />
+                <span className="text-sm text-slate-700">Email notifications for new responses</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" defaultChecked className="w-4 h-4 rounded border-slate-300" />
+                <span className="text-sm text-slate-700">Email notifications for form updates</span>
+              </label>
+            </div>
           </div>
 
           <div className="p-6">
