@@ -193,7 +193,7 @@ export function ResponsesClient({
                     </div>
                   </td>
                   <td className="px-4 py-3 text-sm text-slate-600">
-                    <div className="flex flex-wrap gap-2">
+                    <div className="space-y-1">
                       {fields.slice(0, 3).map((field) => {
                         const val = response.answers[field.id];
                         if (!val) return null;
@@ -203,9 +203,10 @@ export function ResponsesClient({
                           displayVal = opt?.label || val;
                         }
                         return (
-                          <span key={field.id} className="text-xs bg-slate-100 px-2 py-1 rounded">
-                            {displayVal}
-                          </span>
+                          <div key={field.id} className="flex items-center gap-2">
+                            <span className="text-xs text-slate-400">{field.label}:</span>
+                            <span className="text-xs text-slate-600">{displayVal}</span>
+                          </div>
                         );
                       })}
                     </div>
