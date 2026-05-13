@@ -50,7 +50,15 @@ export default async function SettingsPage() {
 
           <div className="p-6">
             <h2 className="text-lg font-semibold text-slate-800 mb-2">Appearance</h2>
-            <p className="text-sm text-slate-500">Customize the look and feel</p>
+            <p className="text-sm text-slate-500 mb-4">Customize the look and feel</p>
+            <div>
+              <label className="text-sm font-medium text-slate-700 block mb-2">Theme</label>
+              <select className="w-full max-w-xs px-3 py-2 border border-slate-200 rounded-lg text-sm">
+                <option>Light</option>
+                <option>Dark</option>
+                <option>System</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
