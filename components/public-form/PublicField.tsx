@@ -154,8 +154,8 @@ export function PublicField({ field, onChange, value, error }: PublicFieldProps)
               <button
                 type="button"
                 role="switch"
-                aria-checked={value ?? false}
-                onClick={() => onChange(field.id, !(value ?? false))}
+                aria-checked={!!value}
+                onClick={() => onChange(field.id, !value)}
                 className={cn(
                   "relative w-12 h-6 rounded-full transition-colors duration-200",
                   value ? "bg-slate-900" : "bg-slate-200"
