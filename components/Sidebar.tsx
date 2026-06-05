@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 
 const routes = [
   { label: "Forms", icon: LayoutDashboard, href: "/dashboard" },
-  { label: "Responses", icon: FileText, href: "/responses" },
-  { label: "Settings", icon: Settings, href: "/settings" },
+  { label: "Responses", icon: FileText, href: "/dashboard/responses" },
+  { label: "Settings", icon: Settings, href: "/dashboard/settings" },
 ];
 
 export const Sidebar = () => {
